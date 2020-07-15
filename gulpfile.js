@@ -17,10 +17,10 @@ sass.compiler = require('node-sass');
 
 // Root Folder
 const files = {
-    js: './js/**/*.js',
-    scss: './scss/**/*.scss',
-    img: './images/*',
-    fonts: './fonts',
+    js: 'app/js/**/*.js',
+    scss: 'app/scss/**/*.scss',
+    img: 'app/images/*',
+    fonts: 'app/fonts',
     dist: 'dist/'
 }
 
@@ -63,13 +63,26 @@ function images() {
 
 // Copy files
 function cssCopy() {
-    return gulp.src('node_modules/bootstrap/dist/css/bootstrap.min.css')
-        .pipe(dest(files.dist + 'css'));
+    return gulp.src([
+        'node_modules/bootstrap/dist/css/bootstrap.min.css',
+        'node_modules/slick-carousel/slick/slick.css',
+        'node_modules/slick-carousel/slick/slick-theme.css',
+        'node_modules/font-awesome/css/font-awesome.min.css'
+    ]).pipe(dest(files.dist + 'css'));
 }
 
 function jsCopy() {
-    return gulp.src('node_modules/bootstrap/dist/js/bootstrap.min.js')
+    return gulp.src([
+        'node_modules/bootstrap/dist/js/bootstrap.min.js',
+        'node_modules/popper.js/dist/popper.min.js',
+        'node_modules/slick-carousel/slick/slick.min.js',
+    ])
         .pipe(dest(files.dist + 'js'));
+}
+
+function fontCopy() {
+    return gulp.src('node_modules/font-awesome/fonts/*')
+        .pipe(dest(files.dist + 'fonts'));
 }
 
 // Watcher
@@ -93,11 +106,12 @@ exports.images = images;
 exports.cssCopy = cssCopy;
 exports.watchs = watchs;
 exports.jsCopy = jsCopy;
+exports.fontCopy = fontCopy;
 
 // default
 exports.default = series(
     cleanTaks,
-    parallel(style, jsScript, images, jsCopy, cssCopy),
+    parallel(style, jsScript, images, jsCopy, cssCopy, fontCopy),
     watchs
 );
 //exports.watch = watch
